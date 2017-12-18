@@ -5,6 +5,8 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.Button
+import robin.com.testmatrix.imageedit.ImageEditView
 import java.util.*
 
 
@@ -14,12 +16,19 @@ class MainActivity : AppCompatActivity() {
         val TAG = "MainActivity"
     }
 
+    lateinit var btnUndo: Button
+    lateinit var imageEditView: ImageEditView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        testMapPoints()
-        testMapRect()
+//        testMapPoints()
+//        testMapRect()
+        btnUndo = findViewById<Button>(R.id.btnUndo)
+        imageEditView = findViewById<ImageEditView>(R.id.imageEditView)
+
+        btnUndo.setOnClickListener { v -> imageEditView.undo() }
     }
 
     private fun testMapPoints() {
@@ -64,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "before: dst= ${Arrays.toString(dst3)}")
     }
 
+    // boolean mapRect (RectF dst, RectF src) 测量src并将测量结果放入dst中，返回值是判断矩形经过变换后是否仍为矩形
     private fun testMapRect() {
         val rect = RectF(400f, 400f, 1000f, 800f)
 
@@ -78,5 +88,10 @@ class MainActivity : AppCompatActivity() {
 
         Log.i(TAG, "mapRadius: ${rect.toString()}")
         Log.e(TAG, "isRect: $result")
+
+        matrix.postSkew(1F, 0F)
+
+        val result1 = matrix.mapRect(rect)
+        Log.e(TAG, "isRect: $result1")   // 由于使用了错切，所以返回结果为false
     }
 }
